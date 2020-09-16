@@ -6,5 +6,4 @@ select
     , sum(amount) as lifetimevalue
     
 from {{ ref('orders') }}
-where payment_status = 'success'
 group by 1
