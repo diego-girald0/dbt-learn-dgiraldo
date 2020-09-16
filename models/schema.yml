@@ -39,4 +39,11 @@ sources:
     database: raw
     tables:
     - name: payment
+  
+  - name: jaffle_shop
+    database: raw
+    tables:
+     - name: customers
+     - name: orders
+    
 
