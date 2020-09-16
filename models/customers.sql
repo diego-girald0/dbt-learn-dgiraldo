@@ -18,8 +18,9 @@ customer_orders as (
         customer_id,
         min(order_date) as first_order_date,
         max(order_date) as most_recent_order_date,
-        count(order_id) as number_of_orders
-    from orders
+        count(order_id) as number_of_orders,
+        sum(amount) as lifetimevalue
+    from {{ ref('orders') }}
     group by 1
 
 ),
@@ -32,12 +33,9 @@ final as (
         customer_orders.first_order_date,
         customer_orders.most_recent_order_date,
         coalesce(customer_orders.number_of_orders, 0) as number_of_orders,
-        sum(amount) as ltv
+        coalesce(lifetimevalue,0) as lifetimevalue
     from customers
     left join customer_orders using (customer_id)
-    left join {{ ref('orders')  }} o 
-    on o.customer_id = customers.customer_id
-    group by 1,2,3,4,5,6
 )
 
 select * 
