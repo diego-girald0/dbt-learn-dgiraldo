@@ -5,7 +5,7 @@
 }}
 
 select
-  c.customer_id,
+  c.customer_id
   , c.first_name
   , c.last_name
   , co.first_order_date
