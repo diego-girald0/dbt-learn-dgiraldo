@@ -37,7 +37,6 @@ final as (
     left join customer_orders using (customer_id)
     left join {{ ref('orders')  }} o 
     on o.customer_id = customers.customer_id
-    and o.status = 'success'
     group by 1,2,3,4,5,6
 )
 

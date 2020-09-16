@@ -8,7 +8,7 @@ select
   o.order_id,
   o.order_date,
   o.customer_id,
-  o.status,
+  p.status,
   p.amount 
 from {{ ref('stg_orders') }} o
 join {{ ref('stg_payments') }} p 
