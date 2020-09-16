@@ -1,22 +1,15 @@
-with orders as (
-  select * 
-  from {{ ref('stg_orders') }}
-),
+{{
+  config(
+    materialized='view'
+  )
+}}
 
-payments as (
-  select * 
-  from {{ ref('stg_payments') }}
-),
-
-final as(
-  select 
-    o.order_id,
-    o.customer_id,
-    p.amount 
-  from orders o 
-  join payments p 
-  on o.order_id = p.order_id
-)
-
-select *
-from final
+select 
+  o.order_id,
+  o.order_date,
+  o.customer_id,
+  p.amount 
+from {{ ref('stg_orders') }} o
+join {{ ref('stg_payments') }} p 
+on o.order_id = p.order_id
+order by customer_id, order_id
