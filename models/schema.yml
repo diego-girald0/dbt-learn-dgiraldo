@@ -1,6 +1,15 @@
 version: 2
 
 models:
+  - name: orders
+    description: One record per order
+    columns:
+      - name: order_id
+        description: Primary key
+        tests:
+          - unique
+          - not_null
+
   - name: customers
     description: One record per customer
     columns:
@@ -10,6 +19,8 @@ models:
           - unique
           - not_null
       - name: first_order_date
+        description: NULL when a customer has not yet placed an order.
+      - name: lifetimevalue
         description: NULL when a customer has not yet placed an order.
 
   - name: stg_customers
@@ -29,21 +40,45 @@ models:
         tests:
           - unique
           - not_null
-      - name: status
+      - name: order_status
         tests:
           - accepted_values:
               values: ['placed', 'shipped', 'completed', 'return_pending', 'returned']
   
+  - name: stg_payments
+    description: This model cleans up payment
+    columns:
+      - name: payment_id
+        description: Primary key
+        tests:
+          - unique
+          - not_null
+      - name: payment_status
+
+  - name: stg_customer_orders
+    description: This model aggregates order data at a unique customer level
+    columns:
+      - name: customer_id
+        description: Primary key
+        tests:
+          - unique
+          - not_null
+
 sources:
   - name: stripe
+    description: This is raw payment data ingested from Stripe
     database: raw
+
     tables:
     - name: payment
+      description: One record per payment transaction. Includes failed transactions.
   
   - name: jaffle_shop
+    description: This is a replica of the Postgres database used by our app
     database: raw
+
     tables:
      - name: customers
+       description: One record per customer.
      - name: orders
-    
-
+       description: One record per order. Includes cancelled and deleted orders.
