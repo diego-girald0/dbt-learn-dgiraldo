@@ -4,15 +4,7 @@
   )
 }}
 
-with customers as (
-    select * from {{ ref('stg_customers') }}
-),
-
-customer_orders as (
-    select * from {{ ref('stg_customer_orders') }}
-),
-
-final as (
+with final as (
     select
         c.customer_id,
         c.first_name,
@@ -21,8 +13,8 @@ final as (
         co.most_recent_order_date,
         coalesce(co.number_of_orders, 0) as number_of_orders,
         coalesce(lifetimevalue,0) as lifetimevalue
-    from customers c
-    left join customer_orders co 
+    from {{ ref('stg_customers') }} c
+    left join  {{ ref('stg_customer_orders') }} co 
     on  c.customer_id = co.customer_id
 )
 
